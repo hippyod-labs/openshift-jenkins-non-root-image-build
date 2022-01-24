@@ -1,0 +1,34 @@
+# This image is meant to be a base image for all other Jenkins Agents
+# This image may also be used directly for image promotion pipelines
+FROM registry.redhat.io/openshift4/ose-jenkins-agent-base
+
+# Buildah/podman is running with chroot, the storage driver is VFS, and no user namespace
+ENV _BUILDAH_STARTED_IN_USERNS="" \
+    BUILDAH_ISOLATION=chroot \
+    STORAGE_DRIVER=vfs
+
+USER root
+
+# Add non-root user Jenkins, install podman/buildah/skopeo, and set directory and file permission
+# IMPORTANT: need to make sure that newuidmap and newgidmap do not have their sticky bit set for non-root builds
+# Remove unneccesary log files
+RUN adduser -g 0 -u 1001 jenkins && \
+    yum -y update && \
+    yum install -y --setopt=tsflags=nodocs podman skopeo buildah --exclude container-selinux && \
+    yum clean all && \
+    chown -R jenkins:0 /home/jenkins && \
+    chmod -R 775 /home/jenkins && \
+    chmod -R 775 /etc/alternatives && \
+    chmod -R 775 /var/lib/alternatives && \
+    chmod -R 775 /usr/lib/jvm && \
+    chmod -R 775 /usr/bin && \
+    chmod 775 /usr/share/man/man1 && \
+    mkdir -p /var/lib/origin && \
+    chmod 775 /var/lib/origin && \
+    chmod u-s /usr/bin/newuidmap && \
+    chmod u-s /usr/bin/newgidmap && \
+    rm -f /var/logs/*
+
+# Make sure to set the user by UID; username will not work, because OCP cannot tell whether it's a non-root user
+# We want to only use a non-root user an not allow the container to run with root
+USER 1001
