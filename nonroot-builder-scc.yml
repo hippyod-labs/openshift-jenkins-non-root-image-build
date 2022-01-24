@@ -17,7 +17,7 @@ metadata:
     kubernetes.io/description: nonroot-builder provides all features of the nonroot
       SCC but allows users to run with any non-root UID and multiple namespaces for 
       nonroot building of images with podman and buildah
-  name: nonrootbuilder
+  name: nonroot-builder
 priority: 5
 readOnlyRootFilesystem: false
 requiredDropCapabilities:
