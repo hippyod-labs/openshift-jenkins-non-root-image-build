@@ -10,12 +10,11 @@ oc new-build --name non-root-jenkins-agent-base  --binary=true --strategy=docker
 oc new-build --name non-root-jenkins-agent-python --binary=true --strategy=docker
 
 # build the base jenkins agent
-cp Dockerfile.base /tmp/Dockerfile
+cp -v Dockerfile.base /tmp/Dockerfile
 oc start-build non-root-jenkins-agent-base --from-file=/tmp/Dockerfile --wait --follow
+rm -f /tmp/Dockerfile
 
 # build the python jenkins agent
-cp Dockerfile.python Dockerfile
+cp -v Dockerfile.python /tmp/Dockerfile
 oc start-build non-root-jenkins-agent-python --from-file=/tmp/Dockerfile --wait --follow
-
-# remove the temp Dockerfile
 rm -f /tmp/Dockerfile
