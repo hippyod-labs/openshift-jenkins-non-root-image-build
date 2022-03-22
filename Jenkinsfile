@@ -1,4 +1,4 @@
-def REGISTRY_URL = 'default-route-openshift-image-registry.apps-crc.testing'
+def REGISTRY_URL='default-route-openshift-image-registry.apps-crc.testing'
 
 podTemplate([
     label: 'non-root-jenkins-agent-python',
@@ -49,7 +49,7 @@ podTemplate([
         sh """
             podman push --tls-verify=false ${REGISTRY_URL}/non-root-image-builds/test-cicd1:latest
 
-            if [[ -z \$(oc get all --ignore-not-found -l app=test-cicd1) ]]
+            if [[ -z \$(oc get deploy --ignore-not-found test-cicd1) ]]
             then
                 oc new-app --image='${REGISTRY_URL}/non-root-image-builds/test-cicd1'
             fi

@@ -18,3 +18,5 @@ rm -f /tmp/Dockerfile
 cp -v Dockerfile.python /tmp/Dockerfile
 oc start-build non-root-jenkins-agent-python --from-file=/tmp/Dockerfile --wait --follow
 rm -f /tmp/Dockerfile
+
+oc new-app jenkins-ephemeral
